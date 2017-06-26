@@ -2,7 +2,7 @@
 export default class Gird{
 	constructor(scene) {
 		var material = new THREE.LineBasicMaterial({
-			color: 0x000000
+			color: 0xffffff
 		});
 		var geometry = new THREE.Geometry();
 		geometry.vertices.push(
