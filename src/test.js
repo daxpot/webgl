@@ -1,7 +1,7 @@
 /* global THREE */
 import Bird from "./obj/Bird"
 import Gird from "./obj/Gird"
-import TextMesh from "./obj/text"
+import TextMesh from "./obj/Text"
 
 class App {
 	constructor() {
