@@ -2,6 +2,7 @@
 import Bird from "./obj/Bird"
 import Gird from "./obj/Gird"
 import TextMesh from "./obj/Text"
+import './obj/OrbitControls'
 
 class App {
 	constructor() {
@@ -12,6 +13,7 @@ class App {
 		this.renderer.setClearColor( 0x000000 );
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 		document.body.appendChild(this.renderer.domElement);	
+		this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement)
 
 		this.initScene();	
 
