@@ -19,7 +19,7 @@ files.forEach(function(f){
 module.exports = {
   entry: entry,
   output: {
-    path: path.resolve(__dirname, './public'),
+    path: path.resolve(__dirname, './public/js'),
     filename: '[name].js'
   },
   module: {
