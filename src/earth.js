@@ -1,5 +1,10 @@
 import './obj/OrbitControls'
 
+window.position = {
+	"w": 0,
+	"j": 0,
+}
+
 class App {
 
 	constructor() {
@@ -15,7 +20,7 @@ class App {
 
 		this.scene = new THREE.Scene();
 		this.camera = new THREE.PerspectiveCamera(angle, aspect, near, far);
-		this.camera.position.set(0, 0, 100);
+		this.camera.position.set(100, 0, 0);
 		this.renderer = new THREE.WebGLRenderer({
 		    antialiasing: true
 		});
@@ -51,22 +56,39 @@ class App {
 
 		this.earthMesh = new THREE.Mesh(earthGeo, earthMat);
 		this.earthMesh.position.set(0, 0, 0);
-		this.earthMesh.rotation.y = 5;
+		// this.earthMesh.rotation.y = 2.8;
 
 		this.scene.add(this.earthMesh);
 
 		this.camera.lookAt(this.earthMesh.position);
 		this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement)
 	    this.clock = new THREE.Clock();
+	    this._position = {
+	    	"w": window.position.w,
+	    	"j": window.position.j
+	    };
 	}
 
 	animate() {
 
 		requestAnimationFrame(this.animate)
 	    var delta = this.clock.getDelta();
+	    if(this._position.w != window.position.w || this._position.j != window.position.j) {
 
-	    this.earthMesh.rotation.y += 0.2 * delta;
-	    // this.controls.update()
+	    	var w = position.w*Math.PI/180;
+	    	var j = position.j*Math.PI/180;
+	    	var x = 100*Math.cos(w)*Math.cos(j);
+	    	var y = 100*Math.sin(w);
+	    	var z = 100*Math.cos(w)*Math.sin(j);
+	    	this.camera.position.set(x, y, z);
+	    	this._position = {
+		    	"w": window.position.w,
+		    	"j": window.position.j
+		    };
+	    }
+
+	    // this.earthMesh.rotation.y += 0.2 * delta;
+	    this.controls.update()
 	    this.renderer.render(this.scene, this.camera);
 	}
 
