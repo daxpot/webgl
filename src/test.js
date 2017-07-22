@@ -48,8 +48,25 @@ class App {
 	    var mesh = new TextMesh("x")
 	    mesh.position.set(0, 0, -200)
 	    this.scene.add(mesh)
-
+	    this.setPoint(new THREE.Vector2(0,0))
 	}
+
+	setPoint(vec2) {
+
+		var w = vec2.x*Math.PI/180;
+		var j = vec2.y*Math.PI/180;
+		var x = 30*Math.cos(w)*Math.cos(j);
+		var y = 30*Math.sin(w);
+		var z = 30*Math.cos(w)*Math.sin(j);
+		var geometry = new THREE.SphereGeometry(1, 32, 32)
+		var material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+		var point = new THREE.Mesh( geometry, material );
+		point.position.set(x, y, z);
+		// point.rotation.z = Math.PI/2;
+		point.rotateX(90)
+		this.scene.add(point)
+	}
+
 	animate() {
 	    requestAnimationFrame(this.animate)
 	    // this.cube.rotation.x += 0.1;

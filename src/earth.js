@@ -35,7 +35,9 @@ class App {
         var ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
         this.scene.add(ambientLight);
 
-		var earthGeo = new THREE.SphereGeometry(30, 40, 400),
+        this.earthRadius = 30;
+
+		var earthGeo = new THREE.SphereGeometry(this.earthRadius, 40, 400),
 			earthMat = new THREE.MeshPhongMaterial();
 
 		earthMat.map = THREE.ImageUtils.loadTexture('img/diffuse.jpg');
@@ -49,6 +51,7 @@ class App {
 
 		this.camera.lookAt(this.earthMesh.position);
 		this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement)
+		this.points = [];
 	}
 
 	setLocation(vec2) {
@@ -80,6 +83,21 @@ class App {
 		}
 	}
 
+	setPoint(vec2) {
+
+		var w = vec2.x*Math.PI/180;
+		var j = vec2.y*Math.PI/180;
+		var x = this.earthRadius*Math.cos(w)*Math.cos(j);
+		var y = this.earthRadius*Math.sin(w);
+		var z = this.earthRadius*Math.cos(w)*Math.sin(j);
+		var geometry = new THREE.SphereGeometry(0.2, 20, 20)
+		var material = new THREE.MeshBasicMaterial( { color: 0x40E0D0 } );
+		var point = new THREE.Mesh( geometry, material );
+		point.position.set(x, y, z);
+		this.scene.add(point)
+		this.points.push(point);
+	}
+
 	animate() {
 
 		requestAnimationFrame(this.animate)
@@ -91,4 +109,7 @@ class App {
 }
 
 var app = new App()
-app.setLocation(new THREE.Vector2(40, -116));
+var bj = new THREE.Vector2(40, -116)
+app.setLocation(bj);
+app.setPoint(bj);
+app.setPoint(new THREE.Vector2(22.3,-114))
