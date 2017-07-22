@@ -1,10 +1,5 @@
 import './obj/OrbitControls'
 
-window.position = {
-	"w": 0,
-	"j": 0,
-}
-
 class App {
 
 	constructor() {
@@ -28,9 +23,6 @@ class App {
 		this.renderer.setSize(WIDTH, HEIGHT);
 		document.body.appendChild(this.renderer.domElement);	
 
-		// this.renderer.autoClear = false;
-		// this.renderer.shadowMapEnabled = true;
-
 		this.initScene();	
 
 		this.animate();
@@ -46,52 +38,57 @@ class App {
 		var earthGeo = new THREE.SphereGeometry(30, 40, 400),
 			earthMat = new THREE.MeshPhongMaterial();
 
-		// diffuse map
 		earthMat.map = THREE.ImageUtils.loadTexture('img/diffuse.jpg');
-		// earthMat.shininess = 300;
-
-		// bump map
-		// earthMat.bumpMap = THREE.ImageUtils.loadTexture('/uploads/150301/bump-map.jpg');
-		// earthMat.bumpScale = 8;
 
 		this.earthMesh = new THREE.Mesh(earthGeo, earthMat);
 		this.earthMesh.position.set(0, 0, 0);
-		// this.earthMesh.rotation.y = 2.8;
 
 		this.scene.add(this.earthMesh);
+		this.earthMesh.nowlocation = new THREE.Vector2(0, 0);
+		this.earthMesh.toLocation = new THREE.Vector2(0, 0);
 
 		this.camera.lookAt(this.earthMesh.position);
 		this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement)
-	    this.clock = new THREE.Clock();
-	    this._position = {
-	    	"w": window.position.w,
-	    	"j": window.position.j
-	    };
+	}
+
+	setLocation(vec2) {
+		this.earthMesh.toLocation = vec2;
+	}
+
+	checkLocation() {
+
+		if(this.earthMesh.nowlocation.x != this.earthMesh.toLocation.x || this.earthMesh.nowlocation.y != this.earthMesh.toLocation.y) {
+
+			if(this.earthMesh.nowlocation.x < this.earthMesh.toLocation.x) {
+				this.earthMesh.nowlocation.x += 1
+			} else if(this.earthMesh.nowlocation.x > this.earthMesh.toLocation.x) {
+				this.earthMesh.nowlocation.x -= 1
+			}
+
+			if(this.earthMesh.nowlocation.y < this.earthMesh.toLocation.y) {
+				this.earthMesh.nowlocation.y += 1
+			} else if(this.earthMesh.nowlocation.y > this.earthMesh.toLocation.y) {
+				this.earthMesh.nowlocation.y -= 1
+			}
+
+			var w = this.earthMesh.nowlocation.x*Math.PI/180;
+			var j = this.earthMesh.nowlocation.y*Math.PI/180;
+			var x = 100*Math.cos(w)*Math.cos(j);
+			var y = 100*Math.sin(w);
+			var z = 100*Math.cos(w)*Math.sin(j);
+			this.camera.position.set(x, y, z);
+		}
 	}
 
 	animate() {
 
 		requestAnimationFrame(this.animate)
-	    var delta = this.clock.getDelta();
-	    if(this._position.w != window.position.w || this._position.j != window.position.j) {
-
-	    	var w = position.w*Math.PI/180;
-	    	var j = position.j*Math.PI/180;
-	    	var x = 100*Math.cos(w)*Math.cos(j);
-	    	var y = 100*Math.sin(w);
-	    	var z = 100*Math.cos(w)*Math.sin(j);
-	    	this.camera.position.set(x, y, z);
-	    	this._position = {
-		    	"w": window.position.w,
-		    	"j": window.position.j
-		    };
-	    }
-
-	    // this.earthMesh.rotation.y += 0.2 * delta;
+	    this.checkLocation()
 	    this.controls.update()
 	    this.renderer.render(this.scene, this.camera);
 	}
 
 }
 
-new App()
+var app = new App()
+app.setLocation(new THREE.Vector2(40, -116));
