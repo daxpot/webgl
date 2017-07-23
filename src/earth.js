@@ -94,6 +94,21 @@ class App {
 		var material = new THREE.MeshBasicMaterial( { color: 0x40E0D0 } );
 		var point = new THREE.Mesh( geometry, material );
 		point.position.set(x, y, z);
+
+		point.nowscale = 1;
+		point.direct = 1;
+		point.animation = function(maxS, minS) {
+			if(this.nowscale >= maxS) {
+				this.direct = -1;
+			}
+			if(this.nowscale <= minS) {
+				this.direct = 1;
+			}
+			var scale = this.nowscale + this.direct*this.nowscale/50
+			this.scale.set(scale, scale, scale)
+			this.nowscale = scale
+		}
+
 		this.scene.add(point)
 		this.points.push(point);
 	}
@@ -102,6 +117,14 @@ class App {
 
 		requestAnimationFrame(this.animate)
 	    this.checkLocation()
+	    var dis = this.camera.position.distanceTo(new THREE.Vector3(0,0,0))
+	    var scale = dis/100
+	  	var maxS = 1.2*scale,
+	  	    minS = 0.8*scale;
+
+	    for(var i=0;i<this.points.length; i++) {
+	    	this.points[i].animation(maxS, minS)
+	    }
 	    this.controls.update()
 	    this.renderer.render(this.scene, this.camera);
 	}
