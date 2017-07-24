@@ -51,6 +51,15 @@ class App {
 	    this.scene.add(mesh)
 	    this.setPoint(new THREE.Vector2(0,0))
 
+	    var w = 0*Math.PI/180;
+	    var j = -116*Math.PI/180;
+	    var x = 30*Math.cos(w)*Math.cos(j);
+	    var y = 30*Math.sin(w);
+	    var z = 30*Math.cos(w)*Math.sin(j);
+
+	    var options = {
+	    	fixed: new THREE.Vector3(x, y, z)
+	    }
 	    this.scene.add(new Umbrella())
 	}
 
