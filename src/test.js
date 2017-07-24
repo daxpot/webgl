@@ -3,6 +3,7 @@ import Bird from "./obj/Bird"
 import Gird from "./obj/Gird"
 import TextMesh from "./obj/Text"
 import './obj/OrbitControls'
+import Umbrella from "./obj/Umbrella"
 
 class App {
 	constructor() {
@@ -46,9 +47,11 @@ class App {
 	    this.scene.add( directionalLight );
 
 	    var mesh = new TextMesh("x")
-	    mesh.position.set(0, 0, -200)
+	    mesh.position.set(-20, 0, 0)
 	    this.scene.add(mesh)
 	    this.setPoint(new THREE.Vector2(0,0))
+
+	    this.scene.add(new Umbrella())
 	}
 
 	setPoint(vec2) {

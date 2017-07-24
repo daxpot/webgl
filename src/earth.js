@@ -87,10 +87,13 @@ class App {
 
 		var w = vec2.x*Math.PI/180;
 		var j = vec2.y*Math.PI/180;
-		var x = this.earthRadius*Math.cos(w)*Math.cos(j);
-		var y = this.earthRadius*Math.sin(w);
-		var z = this.earthRadius*Math.cos(w)*Math.sin(j);
-		var geometry = new THREE.SphereGeometry(0.2, 20, 20)
+		var x1 = Math.cos(w)*Math.cos(j);
+		var y1 = Math.sin(w);
+		var z1 = Math.cos(w)*Math.sin(j);
+		var x = (this.earthRadius + 15)*x1;
+		var y = (this.earthRadius + 15)*y1;
+		var z = (this.earthRadius + 15)*z1;
+		var geometry = new THREE.SphereGeometry(0.1, 20, 20)
 		var material = new THREE.MeshBasicMaterial( { color: 0x40E0D0 } );
 		var point = new THREE.Mesh( geometry, material );
 		point.position.set(x, y, z);
@@ -98,19 +101,31 @@ class App {
 		point.nowscale = 1;
 		point.direct = 1;
 		point.animation = function(maxS, minS) {
-			if(this.nowscale >= maxS) {
-				this.direct = -1;
-			}
-			if(this.nowscale <= minS) {
-				this.direct = 1;
-			}
-			var scale = this.nowscale + this.direct*this.nowscale/50
-			this.scale.set(scale, scale, scale)
-			this.nowscale = scale
+			// if(this.nowscale >= maxS) {
+			// 	this.direct = -1;
+			// }
+			// if(this.nowscale <= minS) {
+			// 	this.direct = 1;
+			// }
+			// var scale = this.nowscale + this.direct*this.nowscale/50
+			// this.scale.set(scale, scale, scale)
+			// this.nowscale = scale
 		}
 
 		this.scene.add(point)
 		this.points.push(point);
+
+
+		var material = new THREE.LineBasicMaterial({
+			color: 0xffffff
+		});
+		var geometry = new THREE.Geometry();
+		geometry.vertices.push(
+			new THREE.Vector3( x1*this.earthRadius, y1*this.earthRadius, z1*this.earthRadius ),
+			new THREE.Vector3( x, y, z ),
+		);
+		var line = new THREE.Line( geometry, material );
+		this.scene.add(line);
 	}
 
 	animate() {
@@ -136,3 +151,6 @@ var bj = new THREE.Vector2(40, -116)
 app.setLocation(bj);
 app.setPoint(bj);
 app.setPoint(new THREE.Vector2(22.3,-114))
+app.setPoint(new THREE.Vector2(22.1,-114.3))
+app.setPoint(new THREE.Vector2(22.2,-114.5))
+app.setPoint(new THREE.Vector2(22.4,-114.7))
