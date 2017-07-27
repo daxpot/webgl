@@ -18,7 +18,6 @@ export default class Umbrella extends THREE.Object3D {
 			geometry.vertices.push(new THREE.Vector3(radius*Math.cos(euler) + fixed.x, radius*Math.sin(euler) + fixed.y, fixed.z - options.height))
 		}
 		geometry.vertices.push(fixed);
-		geometry.colors.push(new THREE.Color(0xffffff))
 		for(let i=0; i<triangle; i++) {
 			geometry.faces.push(new THREE.Face3(i, (i+1)%triangle, triangle))
 		}

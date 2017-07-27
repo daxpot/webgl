@@ -1,5 +1,5 @@
 import './obj/OrbitControls'
-import Umbrella from "./obj/Umbrella"
+import Pentagram from "./obj/Pentagram"
 
 class App {
 
@@ -114,7 +114,13 @@ class App {
 			this.nowscale = scale
 		}
 
-		this.scene.add(point)
+		var penta = new Pentagram({
+			fixed: new THREE.Vector3(x, y, z),
+			radius: 1,
+			height: 0.3
+		})
+		// penta.rotateY(w);
+		this.scene.add(penta)
 		this.points.push(point);
 	}
 

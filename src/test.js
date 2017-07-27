@@ -4,6 +4,7 @@ import Gird from "./obj/Gird"
 import TextMesh from "./obj/Text"
 import './obj/OrbitControls'
 import Umbrella from "./obj/Umbrella"
+import Pentagram from "./obj/Pentagram"
 
 class App {
 	constructor() {
@@ -60,7 +61,7 @@ class App {
 	    var options = {
 	    	fixed: new THREE.Vector3(x, y, z)
 	    }
-	    this.scene.add(new Umbrella())
+	    this.scene.add(new Pentagram())
 	}
 
 	setPoint(vec2) {
