@@ -61,7 +61,9 @@ class App {
 	    var options = {
 	    	fixed: new THREE.Vector3(x, y, z)
 	    }
-	    this.scene.add(new Pentagram())
+	    var penta = new Pentagram();
+	    // penta.rotateX(Math.PI/2);
+	    this.scene.add(penta)
 	}
 
 	setPoint(vec2) {
@@ -76,7 +78,7 @@ class App {
 		var point = new THREE.Mesh( geometry, material );
 		point.position.set(x, y, z);
 		// point.rotation.z = Math.PI/2;
-		point.rotateX(90)
+		// point.rotateX(90)
 		this.scene.add(point)
 	}
 

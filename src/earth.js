@@ -116,12 +116,40 @@ class App {
 
 		var penta = new Pentagram({
 			fixed: new THREE.Vector3(x, y, z),
-			radius: 1,
-			height: 0.3
+			radius: 0.5,
+			height: 0.3,
+			color: Math.floor(Math.random()*16777215)
 		})
-		// penta.rotateY(w);
+		penta.rotation.set(0, -j, w)
+		penta.g = 0.01
+		penta.maxv = 0.2
+		penta.v = penta.maxv*Math.random()
+		penta.maxd = penta.maxv*penta.maxv/(2*penta.g)
+		penta.d = penta.v*penta.v/(2*penta.g)
+		penta.top = this.earthRadius + h;
+		penta.direct = new THREE.Vector3(x1, y1, z1)
+		penta.rot = Math.random()*6
+		penta.animation = function() {
+			if(this.v >= this.maxv) {
+				this.v *= -1
+			}
+			this.v += this.g
+			this.d += this.v
+
+			if(this.d>=this.maxd) {
+				this.v = -this.maxv
+			} else if(this.d <= 0) {
+				this.v = 0;
+			}
+
+			var h = this.maxd-this.d + this.top
+			this.position.set(h*this.direct.x, h*this.direct.y, h*this.direct.z)
+			this.rot += 0.005
+			this.rotateX(this.rot)
+		}
 		this.scene.add(penta)
-		this.points.push(point);
+		this.scene.add(point)
+		this.points.push(penta);
 	}
 
 	animate() {
