@@ -1,13 +1,14 @@
 import './obj/OrbitControls'
 import Pentagram from "./obj/Pentagram"
 
+var WIDTH = window.innerWidth ,
+    HEIGHT = window.innerHeight ;
+
 class App {
 
 	constructor() {
 		this.animate = this.animate.bind(this);
-
-		var WIDTH = window.innerWidth ,
-		    HEIGHT = window.innerHeight ;
+		this.onMouseClick = this.onMouseClick.bind(this);
 
 		var angle = 45,
 		    aspect = WIDTH / HEIGHT,
@@ -23,6 +24,7 @@ class App {
 		this.renderer.setClearColor( 0x000000 );
 		this.renderer.setSize(WIDTH, HEIGHT);
 		document.body.appendChild(this.renderer.domElement);	
+		this.renderer.domElement.addEventListener( 'click', this.onMouseClick );
 
 		this.initScene();	
 
@@ -53,6 +55,7 @@ class App {
 		this.camera.lookAt(this.earthMesh.position);
 		this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement)
 		this.points = [];
+		this.pentas = [];
 	}
 
 	setLocation(vec2) {
@@ -68,6 +71,9 @@ class App {
 			} else if(this.earthMesh.nowlocation.x > this.earthMesh.toLocation.x) {
 				this.earthMesh.nowlocation.x -= 1
 			}
+			if(Math.abs(this.earthMesh.nowlocation.x-this.earthMesh.toLocation.x) <= 1) {
+				this.earthMesh.nowlocation.x = this.earthMesh.toLocation.x
+			}
 
 			if(this.earthMesh.nowlocation.y < this.earthMesh.toLocation.y) {
 				this.earthMesh.nowlocation.y += 1
@@ -75,19 +81,32 @@ class App {
 				this.earthMesh.nowlocation.y -= 1
 			}
 
+			if(Math.abs(this.earthMesh.nowlocation.y-this.earthMesh.toLocation.y) <= 1) {
+				this.earthMesh.nowlocation.y = this.earthMesh.toLocation.y
+			}
+
 			var w = this.earthMesh.nowlocation.x*Math.PI/180;
-			var j = this.earthMesh.nowlocation.y*Math.PI/180;
+			var j = -this.earthMesh.nowlocation.y*Math.PI/180;
 			var x = 100*Math.cos(w)*Math.cos(j);
 			var y = 100*Math.sin(w);
 			var z = 100*Math.cos(w)*Math.sin(j);
 			this.camera.position.set(x, y, z);
 		}
+
+	    var dis = this.camera.position.distanceTo(new THREE.Vector3(0,0,0))
+	    var minDis = 45;
+	    var maxDis = 200;
+	    if(dis < minDis) {
+	    	this.camera.position.multiplyScalar(minDis/dis);
+	    } else if(dis > maxDis) {
+	    	this.camera.position.multiplyScalar(maxDis/dis);
+	    }
 	}
 
 	setPoint(vec2) {
 
 		var w = vec2.x*Math.PI/180;
-		var j = vec2.y*Math.PI/180;
+		var j = -vec2.y*Math.PI/180;
 		var x1 = Math.cos(w)*Math.cos(j);
 		var y1 = Math.sin(w);
 		var z1 = Math.cos(w)*Math.sin(j);
@@ -99,20 +118,6 @@ class App {
 		var material = new THREE.MeshBasicMaterial( { color: 0xffffff } );
 		var point = new THREE.Mesh( geometry, material );
 		point.position.set(x, y, z);
-
-		point.nowscale = 1;
-		point.direct = 1;
-		point.animation = function(maxS, minS) {
-			if(this.nowscale >= maxS) {
-				this.direct = -1;
-			}
-			if(this.nowscale <= minS) {
-				this.direct = 1;
-			}
-			var scale = this.nowscale + this.direct*this.nowscale/50
-			this.scale.set(scale, scale, scale)
-			this.nowscale = scale
-		}
 
 		var penta = new Pentagram({
 			fixed: new THREE.Vector3(x, y, z),
@@ -129,6 +134,7 @@ class App {
 		penta.top = this.earthRadius + h;
 		penta.direct = new THREE.Vector3(x1, y1, z1)
 		penta.rot = Math.random()*6
+		penta.pos = new THREE.Vector2(w, j);
 		penta.animation = function() {
 			if(this.v >= this.maxv) {
 				this.v *= -1
@@ -149,20 +155,40 @@ class App {
 		}
 		this.scene.add(penta)
 		this.scene.add(point)
-		this.points.push(penta);
+		this.points.push(point);
+		this.pentas.push(penta)
+	}
+
+	onMouseClick(event) {
+		// update the mouse variable
+		var mouse = new THREE.Vector2();
+		mouse.x = ( event.clientX / WIDTH ) * 2 - 1;
+		mouse.y = - ( event.clientY / HEIGHT ) * 2 + 1;	
+
+		var raycaster = new THREE.Raycaster();
+		raycaster.setFromCamera( mouse, this.camera );	
+
+		// calculate objects intersecting the picking ray
+		var intersects = raycaster.intersectObjects( this.pentas, true );
+
+		if(intersects.length > 0) {
+			var A = intersects[0].object.parent.pos;
+			var B = this.pentas[0].pos;
+			var dis = Math.floor(6378.1*Math.acos(Math.cos(A.x)*Math.cos(B.x)*Math.cos(A.y-B.y)+ Math.sin(A.x)*Math.sin(B.x)));
+			if(dis > 0) {
+				alert("您与他/她的直线距离为:" + dis + "公里");
+			}
+		}
+
 	}
 
 	animate() {
 
 		requestAnimationFrame(this.animate)
 	    this.checkLocation()
-	    var dis = this.camera.position.distanceTo(new THREE.Vector3(0,0,0))
-	    var scale = dis/100
-	  	var maxS = 1.2*scale,
-	  	    minS = 0.8*scale;
 
-	    for(var i=0;i<this.points.length; i++) {
-	    	this.points[i].animation(maxS, minS)
+	    for(var i=0;i<this.pentas.length; i++) {
+	    	this.pentas[i].animation()
 	    }
 	    this.controls.update()
 	    this.renderer.render(this.scene, this.camera);
@@ -171,10 +197,12 @@ class App {
 }
 
 var app = new App()
-var bj = new THREE.Vector2(40, -116)
+var bj = new THREE.Vector2(39.26, 116.3)
 app.setLocation(bj);
 app.setPoint(bj);
-app.setPoint(new THREE.Vector2(22.3,-114))
-app.setPoint(new THREE.Vector2(22.1,-114.3))
-app.setPoint(new THREE.Vector2(22.2,-114.5))
-app.setPoint(new THREE.Vector2(22.4,-114.7))
+app.setPoint(new THREE.Vector2(22.3,114))
+app.setPoint(new THREE.Vector2(22.1,114.3))
+app.setPoint(new THREE.Vector2(22.2,114.5))
+app.setPoint(new THREE.Vector2(22.4,114.7))
+app.setPoint(new THREE.Vector2(43.46,87.36))
+app.setPoint(new THREE.Vector2(40.7,-74.0))

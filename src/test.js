@@ -9,6 +9,7 @@ import Pentagram from "./obj/Pentagram"
 class App {
 	constructor() {
 		this.animate = this.animate.bind(this);
+		this.onMouseClick = this.onMouseClick.bind(this);
 		this.scene = new THREE.Scene();
 		this.camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 		this.renderer = new THREE.WebGLRenderer();
@@ -16,6 +17,7 @@ class App {
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 		document.body.appendChild(this.renderer.domElement);	
 		this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement)
+		this.renderer.domElement.addEventListener( 'click', this.onMouseClick );
 
 		this.initScene();	
 
@@ -80,6 +82,28 @@ class App {
 		// point.rotation.z = Math.PI/2;
 		// point.rotateX(90)
 		this.scene.add(point)
+	}
+
+	onMouseClick(event) {
+		console.log("Click.");
+		// update the mouse variable
+		var mouse = new THREE.Vector2();
+		mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+		mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;	
+
+		var raycaster = new THREE.Raycaster();
+		raycaster.setFromCamera( mouse, this.camera );	
+
+		// calculate objects intersecting the picking ray
+		var intersects = raycaster.intersectObjects( this.scene.children, true );
+		console.log(intersects.length)
+
+		for ( var i = 0; i < intersects.length; i++ ) {
+
+			intersects[ i ].object.material.color.set( 0xff0000 );
+		
+		}
+
 	}
 
 	animate() {
