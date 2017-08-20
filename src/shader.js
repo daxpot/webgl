@@ -36,7 +36,7 @@ void main() { \
 	vec3 light = vec3(0.5, 0.2, 1.0);\
 	light = normalize(light);\
 	float dProd = max(0.0, dot(vNormal, light));\
-	gl_FragColor = vec4(vUv, 1.0, 0.1);\
+	gl_FragColor = vec4(vUv, 1.0, 0);\
 }";
 		var shader = new THREE.ShaderMaterial({
 			vertexShader: vShader, 
@@ -49,7 +49,7 @@ void main() { \
 		this.displacement = new Float32Array(geometry.attributes.position.count);
 		this.noise = new Float32Array(geometry.attributes.position.count);
 		for(var i = 0; i<this.displacement.length; i++) {
-			this.displacement[i] = Math.random()*5;
+			this.displacement[i] = Math.random();
 			this.noise[i] = Math.random();
 		}
 		geometry.addAttribute("displacement", new THREE.BufferAttribute(this.displacement, 1));
@@ -66,7 +66,7 @@ void main() { \
 	    requestAnimationFrame(this.animate)
 	    for(var i = 0; i<this.displacement.length; i++) {
 	    	this.displacement[i] += this.noise[i]/10;
-	    	if(this.displacement[i] >= 5 || this.displacement[i] <= -5) {
+	    	if(this.displacement[i] >= 1 || this.displacement[i] <= -1) {
 	    		this.noise[i] *= -1;
 	    	}
 	    }
