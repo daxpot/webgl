@@ -19,26 +19,8 @@ class App {
 
 	initScene() {
 		var geometry = new THREE.SphereBufferGeometry(10, 128, 32);
-		var vShader = "\
-varying vec3 vNormal;\
-uniform float amplitude;\
-attribute float displacement;\
-varying vec2 vUv;\
-void main() { \
-	vNormal = normal;\
-	vUv = uv;\
-	vec3 newPosition = position + normal*vec3(displacement*amplitude);\
-	gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition,1); \
-}";
-		var fShader = "\
-varying vec3 vNormal;\
-varying vec2 vUv;\
-void main() { \
-	vec3 light = vec3(0.5, 0.2, 1.0);\
-	light = normalize(light);\
-	float dProd = max(0.0, dot(vNormal, light));\
-	gl_FragColor = vec4(vUv, 1.0, 0);\
-}";
+		var vShader = require("./myshaders/test.vert");
+		var fShader = require("./myshaders/test.fraq");
 		this.uniforms = {
 			amplitude: {
 				type: "f",
