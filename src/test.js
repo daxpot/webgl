@@ -40,31 +40,27 @@ class App {
 		// this.bird.rotation.z = Math.PI/2; 
 		// this.scene.add(this.bird);
 
-		new Gird(this.scene);
+		this.scene.add(new Gird());
 
 		this.camera.position.set(1, 1, 30);
 		this.camera.degree = 0;
 
-		var directionalLight = new THREE.DirectionalLight( 0xffffff, 1 );
+		var directionalLight = new THREE.AmbientLight( 0xffffff, 1 );
 	    directionalLight.position.set( 0, 0, 10 );
 	    this.scene.add( directionalLight );
 
-	    var mesh = new TextMesh("x")
-	    mesh.position.set(-20, 0, 0)
-	    this.scene.add(mesh)
-	    this.setPoint(new THREE.Vector2(0,0))
-
-	    var w = 0*Math.PI/180;
-	    var j = -116*Math.PI/180;
-	    var x = 30*Math.cos(w)*Math.cos(j);
-	    var y = 30*Math.sin(w);
-	    var z = 30*Math.cos(w)*Math.sin(j);
+	    // var mesh = new TextMesh("x")
+	    // mesh.position.set(-20, 0, 0)
+	    // this.scene.add(mesh)
+	    // this.setPoint(new THREE.Vector2(0,0))
 
 	    var options = {
-	    	fixed: new THREE.Vector3(x, y, z)
+	    	fixed: new THREE.Vector3(0, 0, 7),
+	    	height: 5,
+	    	color: 0xff0000
 	    }
-	    var penta = new Pentagram();
-	    // penta.rotateX(Math.PI/2);
+	    var penta = new Pentagram(options);
+	    penta.rotateY(Math.PI/2);
 	    this.scene.add(penta)
 	}
 
@@ -87,22 +83,22 @@ class App {
 	onMouseClick(event) {
 		console.log("Click.");
 		// update the mouse variable
-		var mouse = new THREE.Vector2();
-		mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-		mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;	
+		// var mouse = new THREE.Vector2();
+		// mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+		// mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;	
 
-		var raycaster = new THREE.Raycaster();
-		raycaster.setFromCamera( mouse, this.camera );	
+		// var raycaster = new THREE.Raycaster();
+		// raycaster.setFromCamera( mouse, this.camera );	
 
-		// calculate objects intersecting the picking ray
-		var intersects = raycaster.intersectObjects( this.scene.children, true );
-		console.log(intersects.length)
+		// // calculate objects intersecting the picking ray
+		// var intersects = raycaster.intersectObjects( this.scene.children, true );
+		// console.log(intersects.length)
 
-		for ( var i = 0; i < intersects.length; i++ ) {
+		// for ( var i = 0; i < intersects.length; i++ ) {
 
-			intersects[ i ].object.material.color.set( 0xff0000 );
+		// 	intersects[ i ].object.material.color.set( 0xff0000 );
 		
-		}
+		// }
 
 	}
 

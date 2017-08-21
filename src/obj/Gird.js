@@ -1,6 +1,7 @@
 
-export default class Gird{
-	constructor(scene) {
+export default class Gird extends THREE.Object3D {
+	constructor() {
+		super()
 		var material = new THREE.LineBasicMaterial({
 			color: 0xffffff
 		});
@@ -15,7 +16,7 @@ export default class Gird{
 			new THREE.Vector3( 100, 0, 0 )
 		);
 		var line = new THREE.Line( geometry, material );
-		scene.add(line);
+		this.add(line);
 		var geometry = new THREE.Geometry();
 		geometry.vertices.push(
 			new THREE.Vector3( 0, -100, 0 ),
@@ -27,7 +28,7 @@ export default class Gird{
 			new THREE.Vector3( 0, 100, 0 ),
 		);
 		var line = new THREE.Line( geometry, material );
-		scene.add(line);
+		this.add(line);
 		var geometry = new THREE.Geometry();
 		geometry.vertices.push(
 			new THREE.Vector3( 0, 0,  -100 ),
@@ -39,6 +40,6 @@ export default class Gird{
 			new THREE.Vector3( 0, 0,  100 ),
 		);
 		var line = new THREE.Line( geometry, material );
-		scene.add(line);
+		this.add(line);
 	}
 }

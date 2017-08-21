@@ -32,7 +32,8 @@ class App {
 	}
 
 	initScene() {
-		var bgTexture = new THREE.TextureLoader().load("img/bg.jpg");
+		var loader = new THREE.TextureLoader();
+		var bgTexture = loader.load("img/bg.jpg");
 		this.scene.background = bgTexture;
 
         var ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
@@ -43,12 +44,51 @@ class App {
 		var earthGeo = new THREE.SphereGeometry(this.earthRadius, 40, 400),
 			earthMat = new THREE.MeshPhongMaterial();
 
-		earthMat.map = THREE.ImageUtils.loadTexture('img/diffuse.jpg');
+		earthMat.map = loader.load('img/diffuse.jpg');
+
+		// earthMat.bumpMap = loader.load('img/earth_bump.jpg')
+		// earthMat.bumpScale = 0.15;
+		// earthMat.specularMap = loader.load('img/earth_spec.jpg')
+
+		var vertexShader = 'varying vec3 vNormal;\
+void main()\
+{\
+    vNormal = normalize( normalMatrix * normal );\
+    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );\
+}';
+
+		var fragmentShader = 'uniform float c;\
+uniform float p;\
+varying vec3 vNormal;\
+void main()\
+{\
+	float intensity = pow( c - dot( vNormal, vec3( 0.0, 0.0, 1.0 ) ), p );\
+	gl_FragColor = vec4( 0.2, 0.58, 0.9, 0.3 ) * intensity;\
+}';
+
+
+		var material = new THREE.ShaderMaterial({
+
+	        uniforms: {
+	            'c': { type: 'f', value: 0.5 },
+	            'p': { type: 'f', value: 2.0 }
+	        },
+	        vertexShader: vertexShader,
+	        fragmentShader: fragmentShader
+
+	    });
 
 		this.earthMesh = new THREE.Mesh(earthGeo, earthMat);
 		this.earthMesh.position.set(0, 0, 0);
 
+
+		this.earthMesh2 = new THREE.Mesh(earthGeo.clone(), material);
+		this.earthMesh2.position.set(0, 0, 0);
+		this.earthMesh2.material.side = THREE.BackSide;
+		this.earthMesh2.scale.set(1.08, 1.08, 1.08)
+
 		this.scene.add(this.earthMesh);
+		this.scene.add(this.earthMesh2);
 		this.earthMesh.nowlocation = new THREE.Vector2(0, 0);
 		this.earthMesh.toLocation = new THREE.Vector2(0, 0);
 
@@ -121,7 +161,7 @@ class App {
 
 		var penta = new Pentagram({
 			fixed: new THREE.Vector3(x, y, z),
-			radius: 0.5,
+			radius: 0.8,
 			height: 0.3,
 			color: Math.floor(Math.random()*16777215)
 		})
