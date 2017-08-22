@@ -20,7 +20,7 @@ class App {
 	initScene() {
 		var geometry = new THREE.SphereBufferGeometry(10, 128, 32);
 		var vShader = require("./myshaders/test.vert");
-		var fShader = require("./myshaders/test.fraq");
+		var fShader = require("./myshaders/test.frag");
 		this.uniforms = {
 			amplitude: {
 				type: "f",
