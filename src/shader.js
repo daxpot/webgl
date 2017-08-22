@@ -22,10 +22,15 @@ class App {
 		var geometry = new THREE.SphereBufferGeometry(10, 128, 32);
 		var vShader = require("./myshaders/test.vert");
 		var fShader = require("./myshaders/test.frag");
+		var loader = new THREE.TextureLoader();
 		this.uniforms = {
 			amplitude: {
 				type: "f",
 				value: 0.0
+			},
+			tDiffuse: {
+				type: "t",
+				value: loader.load("img/diffuse.jpg")
 			}
 		}
 		var shader = new THREE.ShaderMaterial({
