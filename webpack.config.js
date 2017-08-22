@@ -27,7 +27,7 @@ module.exports = {
       { test: /\.js$/, exclude: /node_modules|web_modules/, loader: 'babel-loader' },
       { test: /\.png$/, loader: 'url-loader?limit=5000' },
       { test: /\.json$/, loader: 'json' },
-      { test: /\.(vert|fraq)$/, use: 'raw-loader' }
+      { test: /\.(vert|frag)$/, use: 'raw-loader' }
     ]
   },
   plugins: [

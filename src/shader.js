@@ -1,5 +1,6 @@
 /* global THREE */
 import './obj/OrbitControls'
+import Gird from "./obj/Gird"
 
 class App {
 	constructor() {
@@ -39,7 +40,7 @@ class App {
 		this.displacement = new Float32Array(geometry.attributes.position.count);
 		// this.noise = new Float32Array(geometry.attributes.position.count);
 		for(var i = 0; i<this.displacement.length; i++) {
-			this.displacement[i] = Math.random()*5;
+			this.displacement[i] = Math.random()*2;
 			// this.noise[i] = Math.random();
 		}
 		geometry.addAttribute("displacement", new THREE.BufferAttribute(this.displacement, 1));
@@ -49,6 +50,7 @@ class App {
 
 		this.camera.position.set(0, 0, 30);
 		this.frame = 0;
+		this.scene.add(new Gird());
 
 	}
 
